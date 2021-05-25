@@ -5,7 +5,7 @@ export default function NextButton(props) {
     <Button
       onClick={(e) => props.handleView(e)}
       inverted
-      color="blue"
+      color="green"
       content="Next"
       value="increment"
       icon="right arrow"
