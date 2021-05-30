@@ -1,15 +1,14 @@
 import { Button } from "semantic-ui-react";
-export default function PreviousButton(props) {
+export default function PreviousButton({ handleView }) {
   return (
     <Button
-      onClick={(e) => props.handleView(e)}
+      onClick={(e) => handleView(e)}
       inverted
       color="red"
       content="Previous"
       value="decrement"
       icon="left arrow"
       labelPosition="left"
-      disabled={props.condition}
     />
   );
 }

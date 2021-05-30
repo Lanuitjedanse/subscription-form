@@ -1,11 +1,10 @@
-import NextButton from "./NextButton";
-import PreviousButton from "./PreviousButton";
-import ConfirmButton from "./ConfirmButton";
-import Step1 from "./Step1";
-import Step2 from "./Step2";
-import Step3 from "./Step3";
-import Step4 from "./Step4";
+import SubscriptionChoice from "./SubscriptionChoice";
+import SubscriberInfo from "./SubscriberInfo";
+import SubscriberPaymentInfo from "./SubscriberPaymentInfo";
+import SubscriptionConfirmation from "./SubscriptionConfirmation";
 import StepsVisual from "./StepsVisual";
+import ContentBox from "./ContentBox";
+import InputBox from "./InputBox";
 
 import { useState, useEffect, useReducer } from "react";
 import reducer, { initialState } from "./reducer";
@@ -20,14 +19,9 @@ export default function SubscriptionForm() {
     gygabytes,
     paymentUpFront,
     durationSub,
-    cardNumber,
-    cardExpiration,
-    agreementOrder,
-    cardCode,
   } = state;
 
   let [renderView, setRenderView] = useState(0);
-  const [condition, setCondition] = useState(true);
 
   useEffect(() => {
     setRenderView(renderView);
@@ -49,8 +43,9 @@ export default function SubscriptionForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
+    console.log("...state", state);
 
     fetch("https://httpbin.org/post", {
       method: "post",
@@ -60,94 +55,83 @@ export default function SubscriptionForm() {
       }),
     }).then(function (response) {
       setRenderView(renderView + 1);
-      alert("Post request successfully sent", response.data);
+      alert("Post request successfully sent");
+      console.log("response.data", response);
     });
   };
 
   return (
-    <div className="flex flex-col items-center content-center mt-5">
-      <h1 className="text-4xl mt-5 text-center">Cloud Storage Subscription</h1>
-
+    <ContentBox>
       <StepsVisual renderView={renderView} />
       {renderView === 0 && (
-        <div className="flex flex-col items-center mt-5 border-2 rounded-lg w-4/5">
-          <Step1 dispatch={dispatch} state={state} />
-
-          <div className="space-x-96">
-            <div className="invisible">
-              <PreviousButton handleView={handleView} />
-            </div>
-            <NextButton
-              handleView={handleView}
-              condition={gygabytes && durationSub ? false : true}
-            />
-          </div>
-        </div>
+        <InputBox>
+          <SubscriptionChoice
+            dispatch={dispatch}
+            state={state}
+            handleView={handleView}
+            calculatePrice={calculatePrice}
+          />
+        </InputBox>
       )}
       {renderView === 1 && (
-        <div
-          className={`flex flex-col items-center mt-5 border-2 rounded-lgw-4/5`}
-        >
-          <Step2 dispatch={dispatch} state={state} />
-          <div className="space-x-96">
-            <PreviousButton handleView={handleView} />
-
-            <NextButton
-              handleView={handleView}
-              condition={first && last && email && address ? false : true}
-            />
-          </div>
-        </div>
+        <InputBox>
+          {
+            <>
+              <SubscriberInfo
+                dispatch={dispatch}
+                state={state}
+                handleView={handleView}
+                onSubmit={onSubmit}
+                calculatePrice={calculatePrice}
+              />
+            </>
+          }
+        </InputBox>
       )}
       {renderView === 2 && (
-        <div
-          className={`flex flex-col items-center mt-5 border-2 rounded-lg w-4/5`}
-        >
-          <Step3 dispatch={dispatch} state={state} />
-          <div className="flex content-evenly">
-            <PreviousButton handleView={handleView} />
-            <NextButton
-              handleView={handleView}
-              condition={
-                cardCode && cardNumber && cardExpiration ? false : true
-              }
-            />
-          </div>
-        </div>
+        <InputBox>
+          <SubscriberPaymentInfo
+            dispatch={dispatch}
+            state={state}
+            handleView={handleView}
+            onSubmit={onSubmit}
+            calculatePrice={calculatePrice}
+          />
+        </InputBox>
       )}
       {renderView === 3 && (
-        <div
-          className={`flex flex-col items-center mt-5 border-2 rounded-lg w-4/5`}
-        >
-          <Step4 state={state} dispatch={dispatch} renderView={renderView} />
-          <div className="flex-start">
-            <PreviousButton handleView={handleView} />
-          </div>
-          <div>
-            <ConfirmButton
-              handleSubmit={handleSubmit}
-              condition={agreementOrder ? false : true}
-            />
-          </div>
-        </div>
+        <InputBox>
+          <SubscriptionConfirmation
+            state={state}
+            dispatch={dispatch}
+            renderView={renderView}
+            handleView={handleView}
+            onSubmit={onSubmit}
+            calculatePrice={calculatePrice}
+          />
+        </InputBox>
       )}
       {renderView === 4 && (
-        <div
-          className={`flex flex-col items-center mt-5 border-2 rounded-lg w-4/5`}
-        >
-          <h2 className="text-3xl mt-5 mb-2.5">Your order is confirmed!</h2>
+        <InputBox>
+          <h2 className="mt-5 mb-5 xs:text-xl sm:text-2xl md:text-3xl">
+            Your order is confirmed!
+          </h2>
           <p className="mb-2.5 mt-2.5">{first}</p>
           <p className="mb-2.5 mt-2.5">{last}</p>
+          <p className="mb-2.5 mt-2.5">{email}</p>
+          <p className="mb-2.5 mt-2.5">{address}</p>
           <p className="mb-2.5 mt-2.5">
             Subscription duration: {durationSub} Months
           </p>
           <p className="mb-2.5 mt-2.5">
-            Payment upfront: {paymentUpFront ? "Yes" : "No"}
+            Payment upfront: {paymentUpFront ? "Yes \u2705" : "No \u274C"}
           </p>
           <p className="mb-2.5 mt-2.5">Amount of gygabytes: {gygabytes} GB</p>
-        </div>
+          <span className=" bg-white h-10 w-32 rounded-lg text-center leading-10 mt-5 mb-5">
+            Price {calculatePrice(gygabytes)} $
+          </span>
+        </InputBox>
       )}
-      <span>Price: {calculatePrice(gygabytes)} $</span>
-    </div>
+    </ContentBox>
   );
 }

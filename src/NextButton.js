@@ -1,16 +1,19 @@
 import { Button } from "semantic-ui-react";
 
-export default function NextButton(props) {
+import isEmpty from "lodash/isEmpty";
+
+export default function NextButton({ handleView, errors }) {
   return (
     <Button
-      onClick={(e) => props.handleView(e)}
+      onClick={(e) => handleView(e)}
       inverted
-      color="green"
+      color="blue"
       content="Next"
       value="increment"
       icon="right arrow"
+      type="submit"
       labelPosition="right"
-      disabled={props.condition}
+      disabled={isEmpty(errors)}
     />
   );
 }

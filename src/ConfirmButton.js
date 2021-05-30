@@ -1,18 +1,17 @@
-import React from "react";
 import { Button } from "semantic-ui-react";
 
-export default function ConfirmButton(props) {
+export default function ConfirmButton({ onSubmit, agreementOrder }) {
   return (
     <>
       <Button
-        onClick={(e) => props.handleSubmit(e)}
-        color="green"
+        onClick={(e) => onSubmit(e)}
+        color="olive"
         content="Confirm"
         value="submit"
         icon="right arrow"
         labelPosition="right"
         type="Submit"
-        disabled={props.condition}
+        disabled={!agreementOrder}
       />
     </>
   );

@@ -12,9 +12,11 @@ export const initialState = {
   condition: true,
   paymentUpFront: false,
   agreementOrder: false,
+  errors: false,
 };
 
 export default function reducer(state, action) {
+  console.log("hello", state, action);
   return {
     ...state,
     [action.field]: action.value,
