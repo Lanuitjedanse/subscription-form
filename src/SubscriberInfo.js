@@ -56,6 +56,7 @@ export default function SubscriberInfo({
         placeholder="Email"
         autoComplete="off"
         defaultValue={email}
+        required
       />
 
       <input
