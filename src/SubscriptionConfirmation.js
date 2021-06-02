@@ -44,7 +44,7 @@ export default function SubscriberPaymentInfo({
         className={`bg-blue-200 mb-2.5 mt-2.5`}
         id="agreementOrder"
         name="agreement"
-        value={agreementOrder}
+        checked={agreementOrder}
         onChange={(e) =>
           dispatch({ field: "agreementOrder", value: e.target.checked })
         }

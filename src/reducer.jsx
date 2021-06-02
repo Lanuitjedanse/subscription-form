@@ -12,7 +12,13 @@ export const initialState = {
   condition: true,
   paymentUpFront: false,
   agreementOrder: false,
-  errors: false,
+  checkFirst: 0,
+  checkLast: 0,
+  checkEmail: 0,
+  checkAddress: 0,
+  checkCardLength: 0,
+  checkExpiration: 0,
+  checkCVCCode: 0,
 };
 
 export default function reducer(state, action) {

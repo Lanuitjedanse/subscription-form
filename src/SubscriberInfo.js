@@ -1,18 +1,85 @@
 import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import isEmpty from "lodash/isEmpty";
-import InputBox from "./InputBox";
+
+import { useState, useEffect } from "react";
 
 export default function SubscriberInfo({
   state,
   dispatch,
   handleView,
-  onSubmit,
   calculatePrice,
 }) {
+  const checkfirstName = (e) => {
+    if (e.length < 3) {
+      dispatch({
+        field: "checkFirst",
+        value: 1,
+      });
+    } else if (e.length > 3) {
+      dispatch({
+        field: "checkFirst",
+        value: 2,
+      });
+    }
+  };
+
+  const checkLastName = (e) => {
+    if (e.length < 3) {
+      dispatch({
+        field: "checkLast",
+        value: 1,
+      });
+    } else if (e.length > 3) {
+      dispatch({
+        field: "checkLast",
+        value: 2,
+      });
+    }
+  };
+
+  const checkEmailUser = (e) => {
+    let regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!regEmail.test(e)) {
+      dispatch({
+        field: "checkEmail",
+        value: 1,
+      });
+    } else {
+      dispatch({
+        field: "checkEmail",
+        value: 2,
+      });
+    }
+  };
+
+  const checkAddressUser = (e) => {
+    if (e.length < 10) {
+      dispatch({
+        field: "checkAddress",
+        value: 1,
+      });
+    } else if (e.length > 10) {
+      dispatch({
+        field: "checkAddress",
+        value: 2,
+      });
+    }
+  };
+
   const inputStyle =
     "bg-white mb-5 w-56 rounded-sm h-11 border p-3 focus:outline-none";
-  const { first, last, email, address, gygabytes } = state;
+  const {
+    first,
+    last,
+    email,
+    address,
+    gygabytes,
+    checkFirst,
+    checkLast,
+    checkEmail,
+    checkAddress,
+  } = state;
 
   return (
     <>
@@ -20,10 +87,16 @@ export default function SubscriberInfo({
         Personal Informations
       </h2>
       <input
-        className={`${inputStyle}`}
-        onChange={(e) =>
-          dispatch({ field: "first", value: e.target.value.trim() })
-        }
+        className={`${inputStyle} ${checkFirst === 1 && ` border-red-500`} ${
+          checkFirst === 2 && `border-green-400`
+        }`}
+        onChange={(e) => {
+          checkfirstName(e.target.value.trim());
+          dispatch({
+            field: "first",
+            value: e.target.value.trim(),
+          });
+        }}
         name="first"
         id="first"
         type="text"
@@ -32,9 +105,16 @@ export default function SubscriberInfo({
         defaultValue={first}
       />
 
+      {checkFirst === 1 && (
+        <p className="text-red-500">You need to enter a valid name</p>
+      )}
+
       <input
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${checkLast === 1 && `border-red-500`} ${
+          checkLast === 2 && `border-green-400`
+        }`}
         onChange={(e) => {
+          checkLastName(e.target.value.trim());
           dispatch({ field: "last", value: e.target.value.trim() });
         }}
         name="last"
@@ -44,10 +124,15 @@ export default function SubscriberInfo({
         autoComplete="off"
         defaultValue={last}
       />
-
+      {checkLast === 1 && (
+        <p className="text-red-500">You need to enter a valid name</p>
+      )}
       <input
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${checkEmail === 1 && `border-red-500`} ${
+          checkEmail === 2 && `border-green-400`
+        }`}
         onChange={(e) => {
+          checkEmailUser(e.target.value.trim());
           dispatch({ field: "email", value: e.target.value.trim() });
         }}
         name="email"
@@ -59,9 +144,16 @@ export default function SubscriberInfo({
         required
       />
 
+      {checkEmail === 1 && (
+        <p className="text-red-500">You need to enter a valid email address</p>
+      )}
+
       <input
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${checkAddress === 1 && `border-red-500`} ${
+          checkAddress === 2 && `border-green-400`
+        }`}
         onChange={(e) => {
+          checkAddressUser(e.target.value.trim());
           dispatch({ field: "address", value: e.target.value.trim() });
         }}
         name="address"
@@ -71,6 +163,10 @@ export default function SubscriberInfo({
         autoComplete="off"
         defaultValue={address}
       />
+
+      {checkAddress === 1 && (
+        <p className="text-red-500">You need to enter a valid address</p>
+      )}
 
       <span className=" bg-white h-10 w-32 rounded-lg text-center leading-10">
         Price {calculatePrice(gygabytes)} $
@@ -82,7 +178,7 @@ export default function SubscriberInfo({
         <NextButton
           isEmpty={isEmpty}
           handleView={handleView}
-          errors={first && last && email && address}
+          errors={checkFirst && checkLast && checkEmail && checkAddress}
         />
       </div>
     </>

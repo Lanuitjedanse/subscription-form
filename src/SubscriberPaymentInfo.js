@@ -2,6 +2,7 @@ import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import isEmpty from "lodash/isEmpty";
 import InputBox from "./InputBox";
+import { useState } from "react";
 
 export default function SubscriberPaymentInfo({
   state,
@@ -9,20 +10,79 @@ export default function SubscriberPaymentInfo({
   handleView,
   calculatePrice,
 }) {
+  const checkCreditCardNumber = (e) => {
+    if (e.length < 16 || e.length > 16) {
+      dispatch({
+        field: "checkCardLength",
+        value: 1,
+      });
+    } else if (e.length === 16) {
+      dispatch({
+        field: "checkCardLength",
+        value: 2,
+      });
+    }
+  };
+
+  const checkExpirationDate = (e) => {
+    if (e === "") {
+      dispatch({
+        field: "checkExpiration",
+        value: 1,
+      });
+      return e.value;
+    }
+    dispatch({
+      field: "checkExpiration",
+      value: 2,
+    });
+    return e.value;
+  };
+
+  const checkCVC = (e) => {
+    console.log("e", e.length);
+    if (e.length < 3) {
+      dispatch({
+        field: "checkCVCCode",
+        value: 1,
+      });
+      return e.value;
+    } else if (e.length === 3) {
+      dispatch({
+        field: "checkCVCCode",
+        value: 2,
+      });
+      return e.value;
+    }
+  };
   const inputStyle =
     "bg-white mb-5 w-56 rounded-sm h-11 border p-3 focus:outline-none";
-  const { cardCode, cardExpiration, cardNumber, gygabytes } = state;
+  const {
+    cardCode,
+    cardExpiration,
+    cardNumber,
+    gygabytes,
+    checkCardLength,
+    checkExpiration,
+    checkCVCCode,
+  } = state;
 
   return (
-    <InputBox>
+    <>
       <h2 className="mt-5 mb-5 xs:text-xl sm:text-2xl md:text-3xl">
         Credit Card Informations
       </h2>
       <input
         type="number"
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${
+          checkCardLength === 1 && `border-red-500`
+        } ${checkCardLength === 2 && `border-green-400`}`}
         onChange={(e) => {
-          dispatch({ field: "cardNumber", value: e.target.value.trim() });
+          checkCreditCardNumber(e.target.value);
+          dispatch({
+            field: "cardNumber",
+            value: e.target.value.trim(),
+          });
         }}
         name="card-number"
         id="cardNumber"
@@ -31,10 +91,22 @@ export default function SubscriberPaymentInfo({
         defaultValue={cardNumber}
       />
 
+      {checkCardLength === 1 && (
+        <p className="text-red-500">
+          You need to enter a valid credit card number (16 numbers)!
+        </p>
+      )}
+
       <input
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${
+          checkExpiration === 1 && `border-red-500`
+        } ${checkExpiration === 2 && `border-green-400`}`}
         onChange={(e) => {
-          dispatch({ field: "cardExpiration", value: e.target.value });
+          checkExpirationDate(e.target.value);
+          dispatch({
+            field: "cardExpiration",
+            value: e.target.value,
+          });
         }}
         name="card-expiration"
         type="month"
@@ -43,19 +115,31 @@ export default function SubscriberPaymentInfo({
         placeholder="Expiration Date"
         autoComplete="off"
         defaultValue={cardExpiration}
-      ></input>
+      />
+      {checkExpiration === 1 && (
+        <p className="text-red-500">You need to enter an expiration date!</p>
+      )}
 
       <input
-        className={`${inputStyle}`}
+        className={`${inputStyle} ${checkCVCCode === 1 && `border-red-500`} ${
+          checkCVCCode === 2 && `border-green-400`
+        }`}
         onChange={(e) => {
-          dispatch({ field: "cardCode", value: e.target.value.trim() });
+          checkCVC(e.target.value);
+          dispatch({
+            field: "cardCode",
+            value: e.target.value.trim(),
+          });
         }}
         name="card-code"
         type="number"
         placeholder="CVC"
         autoComplete="off"
         defaultValue={cardCode}
-      ></input>
+      />
+      {checkCVCCode === 1 && (
+        <p className="text-red-500">The CVC code should be 3 numbers</p>
+      )}
 
       <span className=" bg-white h-10 w-32 rounded-lg text-center leading-10">
         Price {calculatePrice(gygabytes)} $
@@ -66,9 +150,9 @@ export default function SubscriberPaymentInfo({
         <NextButton
           handleView={handleView}
           isEmpty={isEmpty}
-          errors={cardNumber && cardCode && cardExpiration}
+          errors={checkCardLength && checkExpiration && checkCVCCode}
         />
       </div>
-    </InputBox>
+    </>
   );
 }
