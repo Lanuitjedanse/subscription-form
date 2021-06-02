@@ -1,8 +1,8 @@
 import NextButton from "./NextButton";
 import PreviousButton from "./PreviousButton";
 import isEmpty from "lodash/isEmpty";
-import InputBox from "./InputBox";
-import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export default function SubscriberPaymentInfo({
   state,
@@ -56,7 +56,7 @@ export default function SubscriberPaymentInfo({
     }
   };
   const inputStyle =
-    "bg-white mb-5 w-56 rounded-sm h-11 border p-3 focus:outline-none";
+    "bg-white w-56 rounded-sm h-11 border p-3 focus:outline-none";
   const {
     cardCode,
     cardExpiration,
@@ -72,73 +72,109 @@ export default function SubscriberPaymentInfo({
       <h2 className="mt-5 mb-5 xs:text-xl sm:text-2xl md:text-3xl">
         Credit Card Informations
       </h2>
-      <input
-        type="number"
-        className={`${inputStyle} ${
-          checkCardLength === 1 && `border-red-500`
-        } ${checkCardLength === 2 && `border-green-400`}`}
-        onChange={(e) => {
-          checkCreditCardNumber(e.target.value);
-          dispatch({
-            field: "cardNumber",
-            value: e.target.value.trim(),
-          });
-        }}
-        name="card-number"
-        id="cardNumber"
-        placeholder="Credit Card Number"
-        autoComplete="off"
-        defaultValue={cardNumber}
-      />
+      <div className="flex space-x-5 items-center content-center mb-5">
+        <input
+          type="number"
+          className={`${inputStyle} ${
+            checkCardLength === 1 && `border-red-500`
+          } ${checkCardLength === 2 && `border-green-400`}`}
+          onChange={(e) => {
+            checkCreditCardNumber(e.target.value);
+            dispatch({
+              field: "cardNumber",
+              value: e.target.value.trim(),
+            });
+          }}
+          name="card-number"
+          id="cardNumber"
+          placeholder="Credit Card Number"
+          autoComplete="off"
+          defaultValue={cardNumber}
+        />
+
+        {checkCardLength === 2 && (
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="text-green-400"
+          ></FontAwesomeIcon>
+        )}
+
+        {checkCardLength === 1 && (
+          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+        )}
+      </div>
 
       {checkCardLength === 1 && (
-        <p className="text-red-500">
-          You need to enter a valid credit card number (16 numbers)!
-        </p>
+        <p className="text-red-500 -ml-8">Credit Card should be 16 digits</p>
       )}
 
-      <input
-        className={`${inputStyle} ${
-          checkExpiration === 1 && `border-red-500`
-        } ${checkExpiration === 2 && `border-green-400`}`}
-        onChange={(e) => {
-          checkExpirationDate(e.target.value);
-          dispatch({
-            field: "cardExpiration",
-            value: e.target.value,
-          });
-        }}
-        name="card-expiration"
-        type="month"
-        min="2021-06"
-        max="2028-12"
-        placeholder="Expiration Date"
-        autoComplete="off"
-        defaultValue={cardExpiration}
-      />
+      <div className="flex space-x-5 items-center content-center mb-5">
+        <input
+          className={`${inputStyle} ${
+            checkExpiration === 1 && `border-red-500`
+          } ${checkExpiration === 2 && `border-green-400`}`}
+          onChange={(e) => {
+            checkExpirationDate(e.target.value);
+            dispatch({
+              field: "cardExpiration",
+              value: e.target.value,
+            });
+          }}
+          name="card-expiration"
+          type="month"
+          min="2021-06"
+          max="2028-12"
+          placeholder="Expiration Date"
+          autoComplete="off"
+          defaultValue={cardExpiration}
+        />
+
+        {checkExpiration === 2 && (
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="text-green-400"
+          ></FontAwesomeIcon>
+        )}
+
+        {checkExpiration === 1 && (
+          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+        )}
+      </div>
       {checkExpiration === 1 && (
-        <p className="text-red-500">You need to enter an expiration date!</p>
+        <p className="text-red-500 -ml-8">unvalid expiration date</p>
       )}
+      <div className="flex space-x-5 items-center content-center mb-5">
+        <input
+          className={`${inputStyle} ${checkCVCCode === 1 && `border-red-500`} ${
+            checkCVCCode === 2 && `border-green-400`
+          }`}
+          onChange={(e) => {
+            checkCVC(e.target.value);
+            dispatch({
+              field: "cardCode",
+              value: e.target.value.trim(),
+            });
+          }}
+          name="card-code"
+          type="number"
+          placeholder="CVC"
+          autoComplete="off"
+          defaultValue={cardCode}
+        />
 
-      <input
-        className={`${inputStyle} ${checkCVCCode === 1 && `border-red-500`} ${
-          checkCVCCode === 2 && `border-green-400`
-        }`}
-        onChange={(e) => {
-          checkCVC(e.target.value);
-          dispatch({
-            field: "cardCode",
-            value: e.target.value.trim(),
-          });
-        }}
-        name="card-code"
-        type="number"
-        placeholder="CVC"
-        autoComplete="off"
-        defaultValue={cardCode}
-      />
+        {checkCVCCode === 2 && (
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="text-green-400"
+          ></FontAwesomeIcon>
+        )}
+
+        {checkCVCCode === 1 && (
+          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+        )}
+      </div>
       {checkCVCCode === 1 && (
-        <p className="text-red-500">The CVC code should be 3 numbers</p>
+        <p className="text-red-500 mr-18">CVC should be 3 digits</p>
       )}
 
       <span className=" bg-white h-10 w-32 rounded-lg text-center leading-10">
