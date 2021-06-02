@@ -56,7 +56,7 @@ export default function SubscriberPaymentInfo({
     }
   };
   const inputStyle =
-    "bg-white w-56 rounded-sm h-11 border p-3 focus:outline-none";
+    "bg-white w-56 rounded-md h-11 border p-3 focus:outline-none";
   const {
     cardCode,
     cardExpiration,
@@ -72,7 +72,7 @@ export default function SubscriberPaymentInfo({
       <h2 className="mt-5 mb-5 xs:text-xl sm:text-2xl md:text-3xl">
         Credit Card Informations
       </h2>
-      <div className="flex space-x-5 items-center content-center mb-5">
+      <div className="flex items-center content-center mb-5">
         <input
           type="number"
           className={`${inputStyle} ${
@@ -95,20 +95,25 @@ export default function SubscriberPaymentInfo({
         {checkCardLength === 2 && (
           <FontAwesomeIcon
             icon={faCheck}
-            className="text-green-400"
+            className="text-green-400 absolute ml-64"
           ></FontAwesomeIcon>
         )}
 
         {checkCardLength === 1 && (
-          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="text-red-500 absolute ml-64"
+          ></FontAwesomeIcon>
         )}
       </div>
 
       {checkCardLength === 1 && (
-        <p className="text-red-500 -ml-8">Credit Card should be 16 digits</p>
+        <p className="text-red-500 -ml-6 text-sm">
+          Credit Card should be 16 digits
+        </p>
       )}
 
-      <div className="flex space-x-5 items-center content-center mb-5">
+      <div className="flex items-center content-center mb-5">
         <input
           className={`${inputStyle} ${
             checkExpiration === 1 && `border-red-500`
@@ -132,18 +137,21 @@ export default function SubscriberPaymentInfo({
         {checkExpiration === 2 && (
           <FontAwesomeIcon
             icon={faCheck}
-            className="text-green-400"
+            className="text-green-400 absolute ml-64"
           ></FontAwesomeIcon>
         )}
 
         {checkExpiration === 1 && (
-          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="text-red-500 absolute ml-64"
+          ></FontAwesomeIcon>
         )}
       </div>
       {checkExpiration === 1 && (
-        <p className="text-red-500 -ml-8">unvalid expiration date</p>
+        <p className="text-red-500 -ml-2 text-sm">unvalid expiration date</p>
       )}
-      <div className="flex space-x-5 items-center content-center mb-5">
+      <div className="flex items-center content-center mb-5">
         <input
           className={`${inputStyle} ${checkCVCCode === 1 && `border-red-500`} ${
             checkCVCCode === 2 && `border-green-400`
@@ -165,16 +173,19 @@ export default function SubscriberPaymentInfo({
         {checkCVCCode === 2 && (
           <FontAwesomeIcon
             icon={faCheck}
-            className="text-green-400"
+            className="text-green-400 absolute ml-64"
           ></FontAwesomeIcon>
         )}
 
         {checkCVCCode === 1 && (
-          <FontAwesomeIcon icon={faTimes} color="red"></FontAwesomeIcon>
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="text-red-500 absolute ml-64"
+          ></FontAwesomeIcon>
         )}
       </div>
       {checkCVCCode === 1 && (
-        <p className="text-red-500 mr-18">CVC should be 3 digits</p>
+        <p className="text-red-500 mr-20 text-sm">CVC should be 3 digits</p>
       )}
 
       <span className=" bg-white h-10 w-32 rounded-lg text-center leading-10">
